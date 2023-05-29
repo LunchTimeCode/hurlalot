@@ -32,7 +32,7 @@ clean:
 	rm -rf target
 	rm -f Cargo.lock
 	rm -rf node_modules
-	rm -rf dist	
+
 
 fmt:
   cargo fmt
