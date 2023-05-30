@@ -8,6 +8,6 @@ idea:
 - open git repos
 
 planned tec:
-- iced ui
+- egui
 - reqwest
 - hurl
