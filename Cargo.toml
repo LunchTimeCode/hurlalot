@@ -19,7 +19,7 @@ catppuccin-egui = "3.0.0"
 egui_extras ="0.22.0"
 egui-notify = { git = "https://github.com/ItsEthra/egui-notify.git" }
 egui_dock = "0.6.0"
-log = "0.4.17"
+log = "0.4.18"
 getrandom = { version = "0.2", features = ["js"] }
 
 reqwest = { version = "0.11", features = ["json"] }
