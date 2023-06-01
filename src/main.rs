@@ -1,5 +1,6 @@
 mod app;
 mod caller;
+mod editor;
 mod mains;
 
 #[cfg(target_os = "linux")]

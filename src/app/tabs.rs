@@ -1,6 +1,6 @@
 use egui_dock::{NodeIndex, Style, Tree};
 
-use crate::caller;
+use crate::{caller, editor};
 
 use super::{HurlApp, Module};
 
@@ -20,7 +20,12 @@ impl Tabs {
         tree.split_below(
             NodeIndex::root(),
             0.70,
-            vec![Module::Splitter,Module::Connector, Module::Caller, Module::Settings],
+            vec![
+                Module::Splitter,
+                Module::Connector,
+                Module::Caller,
+                Module::Settings,
+            ],
         );
 
         Self { tree }
@@ -37,6 +42,7 @@ pub fn render(ui: &mut egui::Ui, app: &mut HurlApp) {
 pub struct TabView {
     //states
     caller: caller::req::Client,
+    editor: editor::Editor,
 }
 
 impl egui_dock::TabViewer for TabView {
@@ -57,9 +63,7 @@ impl egui_dock::TabViewer for TabView {
                 ui.label("Caller");
                 self.caller.render(ui)
             }
-            Module::Editor => {
-                ui.label("Editor");
-            },
+            Module::Editor => self.editor.render(ui),
         }
     }
 
