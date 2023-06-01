@@ -1,25 +1,10 @@
-use self::tabs::{TabView, Tabs};
-
-mod command_center;
-mod tabs;
-
-#[derive(PartialEq)]
-pub enum Module {
-    Editor,
-    Splitter,
-    Connector,
-    Caller,
-    Settings,
-}
+mod file;
 
 #[derive(serde::Deserialize, serde::Serialize, Default)]
 #[serde(default)]
 pub struct HurlApp {
-    #[serde(skip)]
-    tabs: Tabs,
-
-    tab_view: TabView,
     command_center_open: bool,
+    file: file::View,
 }
 
 impl HurlApp {
@@ -37,15 +22,12 @@ impl eframe::App for HurlApp {
         catppuccin_egui::set_theme(ctx, catppuccin_egui::FRAPPE);
 
         egui::TopBottomPanel::top("top").show(ctx, |ui| {
-            if ui.button("Tabs").clicked() {
-                self.command_center_open = true
-            };
-            command_center::render(ui, self);
+            ui.horizontal(|ui| self.file.render(ui, ctx));
         });
 
-        egui::CentralPanel::default().show(ctx, |ui| {
-            tabs::render(ui, self);
-        });
+        egui::SidePanel::left("left").show(ctx, |ui| self.file.render_editor(ui));
+
+        egui::CentralPanel::default().show(ctx, |_| self.file.render_buffers(ctx));
     }
 
     fn save(&mut self, storage: &mut dyn eframe::Storage) {

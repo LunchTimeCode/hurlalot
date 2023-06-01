@@ -1,13 +1,23 @@
-use egui::Ui;
+use egui::{Context, Ui};
+
+mod buffer;
 
 #[derive(serde::Deserialize, serde::Serialize, Default)]
 #[serde(default)]
 pub(crate) struct Editor {
-    some_state: String,
+    view: buffer::View,
 }
 
 impl Editor {
     pub fn render(&mut self, ui: &mut Ui) {
-        ui.text_edit_multiline(&mut self.some_state);
+        self.view.render(ui)
+    }
+
+    pub fn render_buffers(&mut self, ctx: &Context) {
+        self.view.render_buffers(ctx)
+    }
+
+    pub fn add_buffer(&mut self, title: String, file: String) {
+        self.view.add_buffer(title, file);
     }
 }
