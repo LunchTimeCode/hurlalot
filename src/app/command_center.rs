@@ -29,5 +29,11 @@ pub fn render(ui: &mut egui::Ui, app: &mut HurlApp) {
             {
                 app.tabs.tree.push_to_first_leaf(Module::Settings)
             }
+
+            if ui.button("Editor").clicked()
+                && app.tabs.tree.find_tab(&Module::Editor).is_none()
+            {
+                app.tabs.tree.push_to_first_leaf(Module::Editor)
+            }
         });
 }

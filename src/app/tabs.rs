@@ -16,11 +16,11 @@ impl Default for Tabs {
 
 impl Tabs {
     pub fn new() -> Self {
-        let mut tree = Tree::new(vec![Module::Splitter]);
+        let mut tree = Tree::new(vec![Module::Editor]);
         tree.split_below(
             NodeIndex::root(),
             0.70,
-            vec![Module::Connector, Module::Caller, Module::Settings],
+            vec![Module::Splitter,Module::Connector, Module::Caller, Module::Settings],
         );
 
         Self { tree }
@@ -57,6 +57,9 @@ impl egui_dock::TabViewer for TabView {
                 ui.label("Caller");
                 self.caller.render(ui)
             }
+            Module::Editor => {
+                ui.label("Editor");
+            },
         }
     }
 
@@ -66,6 +69,7 @@ impl egui_dock::TabViewer for TabView {
             Module::Settings => "Settings",
             Module::Connector => "Connector",
             Module::Caller => "Caller",
+            Module::Editor => "Editor",
         };
         egui::WidgetText::RichText(title.into())
     }

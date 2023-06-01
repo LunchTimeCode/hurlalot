@@ -5,6 +5,7 @@ mod tabs;
 
 #[derive(PartialEq)]
 pub enum Module {
+    Editor,
     Splitter,
     Connector,
     Caller,
