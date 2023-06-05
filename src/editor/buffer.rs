@@ -11,6 +11,12 @@ type Title = String;
 struct Buffers {
     buffers: BTreeMap<Title, String>,
     current: String,
+
+    extension: String,
+    text_changed: bool,
+    last_text: String,
+
+    error: String,
 }
 
 impl egui_dock::TabViewer for Buffers {
@@ -18,17 +24,32 @@ impl egui_dock::TabViewer for Buffers {
 
     fn ui(&mut self, ui: &mut egui::Ui, title: &mut Title) {
         let text = self.buffers.entry(title.clone()).or_default();
+        self.text_changed = self.last_text.eq(text);
+        self.last_text = text.clone();
+
+        if title.ends_with(".hurl") && self.text_changed {
+            match hurl_core::parser::parse_hurl_file(text) {
+                Ok(_) => self.error = "none".into(),
+                Err(err) => {
+                    self.error = format!(
+                        "{:?} at Ln {}, Col {}",
+                        err.inner, err.pos.line, err.pos.column
+                    )
+                }
+            }
+        }
+
         egui::ScrollArea::vertical()
-            .id_source("some inner")
+            .id_source("some inner 3")
             .max_height(500.0)
             .show(ui, |ui| {
-                ui.push_id("second", |ui| {
+                ui.push_id("second_some", |ui| {
                     ui.horizontal_top(|ui| {
                         let mut current: String = text
                             .lines()
                             .take(1000)
                             .enumerate()
-                            .map(|(s, _)| s.to_string() + "\n")
+                            .map(|(s, _)| (s + 1).to_string() + "\n")
                             .collect();
 
                         egui::TextEdit::multiline(&mut current)
@@ -44,6 +65,12 @@ impl egui_dock::TabViewer for Buffers {
                     });
                 });
             });
+
+        ui.add_space(10.0);
+
+        ui.group(|ui| {
+            ui.label(format!("Error: {}", self.error.clone()));
+        });
     }
 
     fn title(&mut self, title: &mut Title) -> egui::WidgetText {

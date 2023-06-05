@@ -22,7 +22,7 @@ pub fn linux() -> eframe::Result<()> {
         depth_buffer: 0,
         stencil_buffer: 0,
         fullscreen: false,
-        mouse_passthrough: true,
+        mouse_passthrough: Default::default(),
         hardware_acceleration: eframe::HardwareAcceleration::Preferred,
         renderer: eframe::Renderer::Glow,
         follow_system_theme: Default::default(),
