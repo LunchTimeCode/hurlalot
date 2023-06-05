@@ -1,4 +1,4 @@
-use std::{ffi::OsStr, path::PathBuf};
+use std::{ffi::OsStr, fs, path::PathBuf};
 
 use egui::{Context, Ui};
 use egui_file::FileDialog;
@@ -28,14 +28,17 @@ impl View {
         if let Some(dialog) = &mut self.open_file_dialog {
             if dialog.show(ctx).selected() {
                 if let Some(file) = dialog.path() {
+                    let name = file
+                        .file_name()
+                        .and_then(OsStr::to_str)
+                        .unwrap_or_default()
+                        .to_owned();
+
+                    let content =
+                        fs::read_to_string(file).expect("Should have been able to read the file");
+
                     info!("chosen file");
-                    self.editor.add_buffer(
-                        file.file_name()
-                            .and_then(OsStr::to_str)
-                            .unwrap_or_default()
-                            .to_owned(),
-                        "content".to_owned(),
-                    );
+                    self.editor.add_buffer(name, content);
                 }
             }
         }

@@ -18,24 +18,32 @@ impl egui_dock::TabViewer for Buffers {
 
     fn ui(&mut self, ui: &mut egui::Ui, title: &mut Title) {
         let text = self.buffers.entry(title.clone()).or_default();
-        ui.horizontal_top(|ui| {
-            let mut current: String = text
-                .lines()
-                .enumerate()
-                .map(|(s, _)| s.to_string() + "\n")
-                .collect();
+        egui::ScrollArea::vertical()
+            .id_source("some inner")
+            .max_height(500.0)
+            .show(ui, |ui| {
+                ui.push_id("second", |ui| {
+                    ui.horizontal_top(|ui| {
+                        let mut current: String = text
+                            .lines()
+                            .take(1000)
+                            .enumerate()
+                            .map(|(s, _)| s.to_string() + "\n")
+                            .collect();
 
-            egui::TextEdit::multiline(&mut current)
-                .interactive(false)
-                .desired_width(30.0)
-                .code_editor()
-                .show(ui);
+                        egui::TextEdit::multiline(&mut current)
+                            .interactive(false)
+                            .desired_width(30.0)
+                            .code_editor()
+                            .show(ui);
 
-            egui::TextEdit::multiline(text)
-                .desired_width(f32::INFINITY)
-                .code_editor()
-                .show(ui);
-        });
+                        egui::TextEdit::multiline(text)
+                            .desired_width(f32::INFINITY)
+                            .code_editor()
+                            .show(ui);
+                    });
+                });
+            });
     }
 
     fn title(&mut self, title: &mut Title) -> egui::WidgetText {
@@ -51,8 +59,6 @@ pub(crate) struct View {
     #[serde(skip)]
     tree: egui_dock::Tree<String>,
 }
-
-//
 
 impl View {
     pub fn render(&mut self, ui: &mut Ui) {

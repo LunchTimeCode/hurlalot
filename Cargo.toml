@@ -6,8 +6,11 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-egui = "0.22"
+egui = { version = "0.22.0", default-features = true, features = [
+  "accesskit",
+] }
 eframe = { version = "0.22.0", default-features = true, features = [
+  "accesskit",
   "default_fonts", # Embed the default egui fonts.
   "glow",          # Use the glow rendering backend. Alternative: "wgpu".
   "persistence",   # Enable restoring app state when restarting the app.
