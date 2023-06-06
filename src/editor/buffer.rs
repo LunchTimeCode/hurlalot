@@ -2,13 +2,14 @@ use std::collections::BTreeMap;
 
 use eframe::egui;
 use egui::Ui;
+use hurl_core::{ast::Pos, parser::Error};
 
-use super::hurl_ext::parse_err_to_string;
+use super::hurl_ext::{parse_err_to_message, parse_err_to_pos_err};
 
 /// We identify tabs by the title of the file we are editing.
 type Title = String;
 
-#[derive(serde::Deserialize, serde::Serialize, Default)]
+#[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
 struct Buffers {
     buffers: BTreeMap<Title, String>,
@@ -17,8 +18,28 @@ struct Buffers {
     extension: String,
     text_changed: bool,
     last_text: String,
-
-    error: String,
+    #[serde(skip)]
+    error: Error,
+    error_pos: String,
+    error_message: String,
+}
+impl Default for Buffers {
+    fn default() -> Self {
+        Self {
+            buffers: Default::default(),
+            current: Default::default(),
+            extension: Default::default(),
+            text_changed: Default::default(),
+            last_text: Default::default(),
+            error: hurl_core::parser::Error {
+                pos: Pos { line: 0, column: 0 },
+                recoverable: true,
+                inner: hurl_core::parser::ParseError::Eof {},
+            },
+            error_pos: Default::default(),
+            error_message: Default::default(),
+        }
+    }
 }
 
 impl egui_dock::TabViewer for Buffers {
@@ -31,8 +52,12 @@ impl egui_dock::TabViewer for Buffers {
 
         if title.ends_with(".hurl") && self.text_changed {
             match hurl_core::parser::parse_hurl_file(text) {
-                Ok(_) => self.error = "none".into(),
-                Err(err) => self.error = parse_err_to_string(err.inner, err.pos),
+                Ok(_) => self.error_pos = "none".into(),
+                Err(err) => {
+                    self.error = err.clone();
+                    self.error_pos = parse_err_to_pos_err(&self.error.inner, err.pos);
+                    self.error_message = parse_err_to_message(&self.error.inner)
+                }
             }
         }
 
@@ -66,7 +91,7 @@ impl egui_dock::TabViewer for Buffers {
         ui.add_space(10.0);
 
         ui.group(|ui| {
-            ui.label(format!("Error: {}", self.error.clone()));
+            ui.label(format!("Error: {}", self.error_pos.clone()));
         });
     }
 
