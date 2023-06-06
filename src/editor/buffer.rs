@@ -3,6 +3,8 @@ use std::collections::BTreeMap;
 use eframe::egui;
 use egui::Ui;
 
+use super::hurl_ext::parse_err_to_string;
+
 /// We identify tabs by the title of the file we are editing.
 type Title = String;
 
@@ -30,12 +32,7 @@ impl egui_dock::TabViewer for Buffers {
         if title.ends_with(".hurl") && self.text_changed {
             match hurl_core::parser::parse_hurl_file(text) {
                 Ok(_) => self.error = "none".into(),
-                Err(err) => {
-                    self.error = format!(
-                        "{:?} at Ln {}, Col {}",
-                        err.inner, err.pos.line, err.pos.column
-                    )
-                }
+                Err(err) => self.error = parse_err_to_string(err.inner, err.pos),
             }
         }
 

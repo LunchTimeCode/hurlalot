@@ -1,6 +1,7 @@
 use egui::{Context, Ui};
 
 mod buffer;
+mod hurl_ext;
 
 #[derive(serde::Deserialize, serde::Serialize, Default)]
 #[serde(default)]
