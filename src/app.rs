@@ -1,9 +1,9 @@
-use crate::editor::buffer::Buffers;
+use crate::editor::Editor;
 
 #[derive(serde::Deserialize, serde::Serialize, Default)]
 #[serde(default)]
 pub struct HApp {
-    editor: Buffers,
+    editor: Editor,
 }
 
 impl HApp {

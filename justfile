@@ -13,7 +13,6 @@ export JUST_LOG := log
 watch:
 	cargo watch -c -- just verify
 	
-
 run:
    trunk serve
 
@@ -25,7 +24,7 @@ verify: test lint
 
 # Run the static code analysis
 lint:
-	cargo fmt --check --target wasm32-unknown-unknown
+	cargo fmt --check
 	cargo clippy --target wasm32-unknown-unknown
 
 clean:
@@ -37,9 +36,5 @@ clean:
 fmt:
   cargo fmt
 
-# run the release process in dry run mode (requires `npm`, a `GITHUB_TOKEN` and a `CARGO_REGISTRY_TOKEN`)
-release *args:
-	npm install --no-save conventional-changelog-conventionalcommits @semantic-release/exec
-	npx semantic-release {{args}}
 
 

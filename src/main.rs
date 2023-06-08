@@ -1,5 +1,6 @@
 mod app;
 mod editor;
+mod hurl_ext;
 
 mod web {
     use eframe::WebRunner;
@@ -19,7 +20,6 @@ mod web {
         #[allow(clippy::new_without_default)]
         #[wasm_bindgen(constructor)]
         pub fn new() -> Self {
-            // Redirect [`log`] message to `console.log` and friends:
             eframe::WebLogger::init(log::LevelFilter::Debug).ok();
 
             Self {
@@ -27,7 +27,6 @@ mod web {
             }
         }
 
-        /// Call this once from JavaScript to start your app.
         #[wasm_bindgen]
         pub async fn start(&self, canvas_id: &str) -> Result<(), wasm_bindgen::JsValue> {
             self.runner
