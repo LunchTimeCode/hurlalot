@@ -15,17 +15,17 @@ watch:
 	
 
 run:
-   cargo run
+   trunk serve
 
 test:
-    cargo test
+    cargo test --target wasm32-unknown-unknown
 
 # Perform all verifications (compile, test, lint etc.)
 verify: test lint
 
 # Run the static code analysis
 lint:
-	cargo fmt --check
+	cargo fmt --check --target wasm32-unknown-unknown
 	cargo clippy --all-targets
 
 clean:

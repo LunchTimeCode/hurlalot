@@ -1,19 +1,14 @@
-use std::collections::BTreeMap;
-
 use eframe::egui;
-use egui::Ui;
 use hurl_core::{ast::Pos, parser::Error};
 
 use super::hurl_ext::{parse_err_to_message, parse_err_to_pos_err};
 
-/// We identify tabs by the title of the file we are editing.
-type Title = String;
-
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
-struct Buffers {
-    buffers: BTreeMap<Title, String>,
+pub struct Buffers {
     current: String,
+
+    text: String,
 
     extension: String,
     text_changed: bool,
@@ -26,7 +21,6 @@ struct Buffers {
 impl Default for Buffers {
     fn default() -> Self {
         Self {
-            buffers: Default::default(),
             current: Default::default(),
             extension: Default::default(),
             text_changed: Default::default(),
@@ -38,20 +32,18 @@ impl Default for Buffers {
             },
             error_pos: Default::default(),
             error_message: Default::default(),
+            text: Default::default(),
         }
     }
 }
 
-impl egui_dock::TabViewer for Buffers {
-    type Tab = Title;
+impl Buffers {
+    pub fn render(&mut self, ui: &mut egui::Ui) {
+        self.text_changed = self.last_text.eq(&self.text);
+        self.last_text = self.text.clone();
 
-    fn ui(&mut self, ui: &mut egui::Ui, title: &mut Title) {
-        let text = self.buffers.entry(title.clone()).or_default();
-        self.text_changed = self.last_text.eq(text);
-        self.last_text = text.clone();
-
-        if title.ends_with(".hurl") && self.text_changed {
-            match hurl_core::parser::parse_hurl_file(text) {
+        if self.text_changed {
+            match hurl_core::parser::parse_hurl_file(&self.text) {
                 Ok(_) => self.error_pos = "none".into(),
                 Err(err) => {
                     self.error = err.clone();
@@ -67,7 +59,8 @@ impl egui_dock::TabViewer for Buffers {
             .show(ui, |ui| {
                 ui.push_id("second_some", |ui| {
                     ui.horizontal_top(|ui| {
-                        let mut current: String = text
+                        let mut current: String = self
+                            .text
                             .lines()
                             .take(1000)
                             .enumerate()
@@ -80,7 +73,7 @@ impl egui_dock::TabViewer for Buffers {
                             .code_editor()
                             .show(ui);
 
-                        egui::TextEdit::multiline(text)
+                        egui::TextEdit::multiline(&mut self.text)
                             .desired_width(f32::INFINITY)
                             .code_editor()
                             .show(ui);
@@ -93,46 +86,5 @@ impl egui_dock::TabViewer for Buffers {
         ui.group(|ui| {
             ui.label(format!("Error: {}", self.error_pos.clone()));
         });
-    }
-
-    fn title(&mut self, title: &mut Title) -> egui::WidgetText {
-        egui::WidgetText::from(&*title)
-    }
-}
-
-#[derive(serde::Deserialize, serde::Serialize, Default)]
-#[serde(default)]
-pub(crate) struct View {
-    #[serde(skip)]
-    buffers: Buffers,
-    #[serde(skip)]
-    tree: egui_dock::Tree<String>,
-}
-
-impl View {
-    pub fn render(&mut self, ui: &mut Ui) {
-        for title in self.buffers.buffers.keys() {
-            let tab_location = self.tree.find_tab(title);
-            let is_open = tab_location.is_some();
-            if ui.selectable_label(is_open, title).clicked() {
-                if let Some((node_index, tab_index)) = tab_location {
-                    self.tree.set_active_tab(node_index, tab_index);
-                } else {
-                    // Open the file for editing:
-                    self.tree.push_to_focused_leaf(title.clone());
-                }
-            }
-        }
-    }
-
-    pub fn render_buffers(&mut self, ctx: &egui::Context) {
-        egui_dock::DockArea::new(&mut self.tree)
-            .id("buffers".into())
-            .style(egui_dock::Style::from_egui(ctx.style().as_ref()))
-            .show(ctx, &mut self.buffers);
-    }
-
-    pub fn add_buffer(&mut self, title: String, file: String) {
-        self.buffers.buffers.insert(title, file);
     }
 }

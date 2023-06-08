@@ -1,13 +1,12 @@
-mod file;
+use crate::editor::buffer::Buffers;
 
 #[derive(serde::Deserialize, serde::Serialize, Default)]
 #[serde(default)]
-pub struct HurlApp {
-    command_center_open: bool,
-    file: file::View,
+pub struct HApp {
+    editor: Buffers,
 }
 
-impl HurlApp {
+impl HApp {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         if let Some(storage) = cc.storage {
             return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
@@ -16,18 +15,12 @@ impl HurlApp {
     }
 }
 
-impl eframe::App for HurlApp {
+impl eframe::App for HApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         ctx.request_repaint();
-        catppuccin_egui::set_theme(ctx, catppuccin_egui::FRAPPE);
+        catppuccin_egui::set_theme(ctx, catppuccin_egui::MACCHIATO);
 
-        egui::TopBottomPanel::top("top").show(ctx, |ui| {
-            ui.horizontal(|ui| self.file.render(ui, ctx));
-        });
-
-        egui::SidePanel::left("left").show(ctx, |ui| self.file.render_editor(ui));
-
-        egui::CentralPanel::default().show(ctx, |_| self.file.render_buffers(ctx));
+        egui::CentralPanel::default().show(ctx, |ui| self.editor.render(ui));
     }
 
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
