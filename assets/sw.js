@@ -2,8 +2,8 @@ var cacheName = 'hurlalot';
 var filesToCache = [
   './',
   './index.html',
-  './type_fast.js',
-  './type_fast.wasm',
+  './hurlalot.js',
+  './hurlalot.wasm',
 ];
 
 /* Start the service worker and cache all of the app's content */
