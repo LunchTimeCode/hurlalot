@@ -1,0 +1,20 @@
+{
+    "rust-analyzer.cargo.buildScripts.invocationLocation": "root",
+    "workbench.editor.closeOnFileDelete": true,
+    "workbench.colorTheme": "Monokai Pirokai - Arctic Frost",
+    "files.autoSave": "afterDelay",
+    "vs-kubernetes": {
+        "vscode-kubernetes.helm-path.linux": "/home/silen/.local/state/vs-kubernetes/tools/helm/linux-amd64/helm",
+        "vscode-kubernetes.minikube-path.linux": "/home/silen/.local/state/vs-kubernetes/tools/minikube/linux-amd64/minikube",
+        "vscode-kubernetes.kubectl-path.linux": "/home/silen/.local/state/vs-kubernetes/tools/kubectl/kubectl",
+        "vs-kubernetes.crd-code-completion": "disabled"
+    },
+    "terminal.explorerKind": "external",
+    "terminal.integrated.defaultProfile.linux": "bash",
+
+    "rust-analyzer.procMacro.ignored": {
+
+    },
+    "rust-analyzer.cargo.target": "wasm32-unknown-unknown",
+    "rust-analyzer.cargo.buildScripts.overrideCommand": null
+}
