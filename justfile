@@ -26,7 +26,7 @@ verify: test lint
 # Run the static code analysis
 lint:
 	cargo fmt --check --target wasm32-unknown-unknown
-	cargo clippy --all-targets
+	cargo clippy --target wasm32-unknown-unknown
 
 clean:
 	rm -rf target
