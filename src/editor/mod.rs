@@ -1,7 +1,8 @@
 use eframe::egui;
-use hurl_core::{ast::Pos, parser::Error};
 
-use crate::hurl_ext::{parse_err_to_message, parse_err_to_pos_err};
+use self::parser::Parser;
+
+mod parser;
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
@@ -15,9 +16,7 @@ pub struct Editor {
     last_text: String,
 
     #[serde(skip)]
-    error: Error,
-    error_pos: String,
-    error_message: String,
+    parser: Parser,
 }
 
 impl Default for Editor {
@@ -27,14 +26,8 @@ impl Default for Editor {
             extension: Default::default(),
             text_changed: Default::default(),
             last_text: Default::default(),
-            error: hurl_core::parser::Error {
-                pos: Pos { line: 0, column: 0 },
-                recoverable: true,
-                inner: hurl_core::parser::ParseError::Eof {},
-            },
-            error_pos: Default::default(),
-            error_message: Default::default(),
             text: Default::default(),
+            parser: Default::default(),
         }
     }
 }
@@ -45,14 +38,7 @@ impl Editor {
         self.last_text = self.text.clone();
 
         if self.text_changed {
-            match hurl_core::parser::parse_hurl_file(&self.text) {
-                Ok(_) => self.error_pos = "none".into(),
-                Err(err) => {
-                    self.error = err.clone();
-                    self.error_pos = parse_err_to_pos_err(&self.error.inner, err.pos);
-                    self.error_message = parse_err_to_message(&self.error.inner)
-                }
-            }
+            self.parser.parse(&self.text)
         }
 
         egui::ScrollArea::vertical()
@@ -85,8 +71,6 @@ impl Editor {
 
         ui.add_space(10.0);
 
-        ui.group(|ui| {
-            ui.label(format!("Error: {}", self.error_pos.clone()));
-        });
+        self.parser.render(ui);
     }
 }
