@@ -17,7 +17,7 @@ serde = { version = "1", features = ["derive"] }
 
 catppuccin-egui = "3.0.0"
 egui_extras ="0.22.0"
-log = "0.4.18"
+log = "0.4.19"
 
 hurl_core = "3.0.1"
 
