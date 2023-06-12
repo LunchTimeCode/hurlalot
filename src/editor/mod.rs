@@ -1,7 +1,12 @@
 use eframe::egui;
 
-use self::{hurl_render::View, parser::Parser};
+use self::{
+    highlighter::{highlight, CodeTheme},
+    hurl_render::View,
+    parser::Parser,
+};
 
+mod highlighter;
 mod hurl_render;
 mod parser;
 
@@ -14,6 +19,13 @@ pub struct Editor {
 impl Editor {
     pub fn render(&mut self, ui: &mut egui::Ui) {
         self.parser.parse(&self.text);
+        let theme = CodeTheme::default();
+
+        let mut layouter = |ui: &egui::Ui, string: &str, _wrap_width: f32| {
+            let layout_job = highlight(ui.ctx(), &theme, string);
+            // layout_job.wrap.max_width = wrap_width; // no wrapping
+            ui.fonts(|f| f.layout_job(layout_job))
+        };
 
         egui::ScrollArea::vertical()
             .id_source("some inner 3")
@@ -38,6 +50,8 @@ impl Editor {
                         egui::TextEdit::multiline(&mut self.text)
                             .desired_width(f32::INFINITY)
                             .code_editor()
+                            .lock_focus(true)
+                            .layouter(&mut layouter)
                             .show(ui);
                     });
                 });
