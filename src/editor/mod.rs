@@ -23,7 +23,6 @@ impl Editor {
 
         let mut layouter = |ui: &egui::Ui, string: &str, _wrap_width: f32| {
             let layout_job = highlight(ui.ctx(), &theme, string);
-            // layout_job.wrap.max_width = wrap_width; // no wrapping
             ui.fonts(|f| f.layout_job(layout_job))
         };
 
@@ -42,12 +41,15 @@ impl Editor {
                             .collect();
 
                         egui::TextEdit::multiline(&mut current)
+                            .font(egui::TextStyle::Monospace)
                             .interactive(false)
                             .desired_width(30.0)
                             .code_editor()
+                            .font(egui::FontId::monospace(15.0))
                             .show(ui);
 
                         egui::TextEdit::multiline(&mut self.text)
+                            .font(egui::TextStyle::Monospace)
                             .desired_width(f32::INFINITY)
                             .code_editor()
                             .lock_focus(true)
