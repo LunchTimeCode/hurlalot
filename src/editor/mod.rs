@@ -1,45 +1,19 @@
 use eframe::egui;
 
-use self::parser::Parser;
+use self::{hurl_render::View, parser::Parser};
 
+mod hurl_render;
 mod parser;
 
-#[derive(serde::Deserialize, serde::Serialize)]
-#[serde(default)]
+#[derive(Default)]
 pub struct Editor {
-    current: String,
-
     text: String,
-
-    extension: String,
-    text_changed: bool,
-    last_text: String,
-
-    #[serde(skip)]
     parser: Parser,
-}
-
-impl Default for Editor {
-    fn default() -> Self {
-        Self {
-            current: Default::default(),
-            extension: Default::default(),
-            text_changed: Default::default(),
-            last_text: Default::default(),
-            text: Default::default(),
-            parser: Default::default(),
-        }
-    }
 }
 
 impl Editor {
     pub fn render(&mut self, ui: &mut egui::Ui) {
-        self.text_changed = self.last_text.eq(&self.text);
-        self.last_text = self.text.clone();
-
-        if self.text_changed {
-            self.parser.parse(&self.text)
-        }
+        self.parser.parse(&self.text);
 
         egui::ScrollArea::vertical()
             .id_source("some inner 3")
@@ -69,8 +43,30 @@ impl Editor {
                 });
             });
 
+        if ui.button("add example").clicked() {
+            self.text = self.text.clone() + EXAMPLE + "\n\n"
+        }
+
         ui.add_space(10.0);
 
-        self.parser.render(ui);
+        match self.parser.try_to_get_file() {
+            Ok(file) => file.render(ui),
+            Err(err) => render_error(&err, ui),
+        }
     }
 }
+
+pub fn render_error(err: &str, ui: &mut egui::Ui) {
+    ui.group(|ui| {
+        ui.label(format!("Error: {}", err));
+    });
+}
+
+const EXAMPLE: &str = r#"# Testing a JSON response with JSONPath
+GET https://example.org/api/tests/4567
+
+HTTP 200
+[Asserts]
+jsonpath "$.status" == "RUNNING"    # Check the status code
+jsonpath "$.tests" count == 25      # Check the number of items
+jsonpath "$.id" matches /\d{4}/     # Check the format of the id"#;
