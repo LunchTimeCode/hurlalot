@@ -9,7 +9,6 @@ edition = "2021"
 egui = { version = "0.22.0", default-features = true }
 eframe = { version = "0.22.0", default-features = true, features = [
   "default_fonts", # Embed the default egui fonts.
-  "persistence"
 ] }
 tracing-subscriber = "0.3"
 serde = { version = "1", features = ["derive"] }
