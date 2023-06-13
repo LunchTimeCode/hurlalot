@@ -29,6 +29,10 @@ impl Parser {
             Err(err) => Err(parse_err_to_pos_err(&err.inner, err.pos.clone())),
         }
     }
+
+    pub fn try_to_get_err(&mut self) -> Option<hurl_core::parser::Error> {
+        self.result.clone().err()
+    }
 }
 
 impl Default for Parser {

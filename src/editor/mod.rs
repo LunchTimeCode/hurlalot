@@ -14,12 +14,19 @@ mod parser;
 pub struct Editor {
     text: String,
     parser: Parser,
+    marker: usize,
 }
 
 impl Editor {
     pub fn render(&mut self, ui: &mut egui::Ui) {
         self.parser.parse(&self.text);
         let theme = CodeTheme::default();
+
+        if let Some(err) = self.parser.try_to_get_err() {
+            self.marker = err.pos.line
+        } else {
+            self.marker = usize::MAX
+        }
 
         let mut layouter = |ui: &egui::Ui, string: &str, _wrap_width: f32| {
             let layout_job = highlight(ui.ctx(), &theme, string);
@@ -37,13 +44,23 @@ impl Editor {
                             .lines()
                             .take(1000)
                             .enumerate()
-                            .map(|(s, _)| (s + 1).to_string() + "\n")
+                            .map(|(s, _)| {
+                                (s + 1).to_string()
+                                    + {
+                                        if s + 1 == self.marker {
+                                            " >"
+                                        } else {
+                                            ""
+                                        }
+                                    }
+                                    + "\n"
+                            })
                             .collect();
 
                         egui::TextEdit::multiline(&mut current)
                             .font(egui::TextStyle::Monospace)
                             .interactive(false)
-                            .desired_width(30.0)
+                            .desired_width(40.0)
                             .code_editor()
                             .font(egui::FontId::monospace(15.0))
                             .show(ui);
