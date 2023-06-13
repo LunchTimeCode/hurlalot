@@ -8,7 +8,7 @@ pub fn parse_err_to_pos_err(error: &ParseError, pos: Pos) -> String {
 pub fn parse_err_to_message(error: &ParseError) -> String {
     match error {
         ParseError::Expecting { value } => format!("expecting: {value}"),
-        ParseError::Method { name } => format!("method: {name}"),
+        ParseError::Method { name } => format!("method: {}", http_error(name)),
         ParseError::Version {} => "version".to_string(),
         ParseError::Status {} => "status".to_string(),
         ParseError::Filename {} => "filename".to_string(),
@@ -40,4 +40,11 @@ pub fn parse_err_to_message(error: &ParseError) -> String {
         ParseError::Multiline => "Multiline".to_string(),
         ParseError::GraphQlVariables => "GraphQlVariables".to_string(),
     }
+}
+
+fn http_error(err: &str) -> &str {
+    if matches!(err.to_lowercase().as_str(), "ttp" | "tp" | "htp") {
+        return "you might want HTTP";
+    }
+    err
 }
