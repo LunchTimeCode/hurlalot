@@ -15,8 +15,8 @@ impl View for HurlFile {
         } else {
             "file"
         };
-        ui.heading(title);
-        for (entry_num, entry) in self.entries.iter().enumerate() {
+        ui.heading(format!("beta file preview {title}"));
+        for (entry_num, entry) in self.entries.iter().enumerate().take(2) {
             entry.render(entry_num, ui)
         }
     }
