@@ -17,17 +17,17 @@
  */
 use base64::engine::general_purpose;
 use base64::Engine;
-use hurl_core::ast::*;           
-use hurl_core::ast::Method;                                                                                                        
+use hurl_core::ast::Method;
+use hurl_core::ast::*;
 
 use super::serialize_json::*;
 
 pub fn format(hurl_file: &HurlFile) -> String {
-    hurl_file.to_json().format()                                                                            
+    hurl_file.to_json().format()
 }
 
 pub trait ToJson {
-    fn to_json(&self) -> JValue;                                                                                                                                      
+    fn to_json(&self) -> JValue;
 }
 
 impl ToJson for HurlFile {
@@ -617,7 +617,6 @@ impl ToJson for FilterValue {
             FilterValue::ToInt => {
                 attributes.push(("type".to_string(), JValue::String("toInt".to_string())));
             }
-    
         }
         JValue::Object(attributes)
     }

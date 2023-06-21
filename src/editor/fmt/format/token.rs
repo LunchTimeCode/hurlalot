@@ -1020,8 +1020,6 @@ impl Tokenizable for MaxRedirectOption {
     }
 }
 
-
-
 impl Tokenizable for RetryIntervalOption {
     fn tokenize(&self) -> Vec<Token> {
         let mut tokens: Vec<Token> = vec![];

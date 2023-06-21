@@ -6,10 +6,10 @@ use self::{
     parser::Parser,
 };
 
+mod fmt;
 mod highlighter;
 mod hurl_render;
 mod parser;
-mod fmt;
 
 #[derive(Default)]
 pub struct Editor {
