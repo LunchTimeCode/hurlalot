@@ -9,6 +9,7 @@ use self::{
 mod highlighter;
 mod hurl_render;
 mod parser;
+mod fmt;
 
 #[derive(Default)]
 pub struct Editor {
