@@ -6,8 +6,6 @@ struct Highlighter {}
 impl Highlighter {
     #[allow(clippy::unused_self, clippy::unnecessary_wraps)]
     fn highlight(&self, theme: &CodeTheme, mut text: &str) -> LayoutJob {
-        // Extremely simple syntax highlighter for when we compile without syntect
-
         let mut job = LayoutJob::default();
 
         while !text.is_empty() {

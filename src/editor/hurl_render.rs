@@ -10,15 +10,17 @@ pub trait EnumeratedView {
 
 impl View for HurlFile {
     fn render(&self, ui: &mut egui::Ui) {
-        let title = if self.entries.is_empty() {
-            "empty file"
-        } else {
-            "file"
-        };
-        ui.heading(format!("beta file preview {title}"));
-        for (entry_num, entry) in self.entries.iter().enumerate().take(2) {
-            entry.render(entry_num, ui)
-        }
+        ui.vertical(|ui| {
+            let title = if self.entries.is_empty() {
+                "empty file"
+            } else {
+                "file"
+            };
+            ui.heading(format!("beta file preview {title}"));
+            for (entry_num, entry) in self.entries.iter().enumerate().take(2) {
+                entry.render(entry_num, ui)
+            }
+        });
     }
 }
 
@@ -26,9 +28,9 @@ impl EnumeratedView for Entry {
     fn render(&self, num: usize, ui: &mut egui::Ui) {
         ui.add_space(5.0);
 
-        ui.separator();
         ui.label(format!("Entry {num}"));
         ui.add_space(1.0);
+
         ui.label(self.request.method.to_string());
     }
 }

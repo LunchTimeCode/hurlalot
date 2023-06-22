@@ -1,12 +1,14 @@
 use eframe::egui;
 
 use self::{
+    formatter::Formatter,
     highlighter::{highlight, CodeTheme},
     hurl_render::View,
     parser::Parser,
 };
 
 mod fmt;
+mod formatter;
 mod highlighter;
 mod hurl_render;
 mod parser;
@@ -15,6 +17,7 @@ mod parser;
 pub struct Editor {
     text: String,
     parser: Parser,
+    formatter: Formatter,
     marker: usize,
 }
 
@@ -34,48 +37,57 @@ impl Editor {
             ui.fonts(|f| f.layout_job(layout_job))
         };
 
-        egui::ScrollArea::vertical()
-            .id_source("some inner 3")
-            .max_height(500.0)
-            .show(ui, |ui| {
-                ui.push_id("second_some", |ui| {
-                    ui.horizontal_top(|ui| {
-                        let mut current: String = self
-                            .text
-                            .lines()
-                            .take(1000)
-                            .enumerate()
-                            .map(|(s, _)| {
-                                (s + 1).to_string()
-                                    + {
-                                        if s + 1 == self.marker {
-                                            " >"
-                                        } else {
-                                            ""
+        ui.horizontal_top(|ui| {
+            egui::ScrollArea::vertical()
+                .id_source("some inner 3")
+                .max_height(500.0)
+                .max_width(1000.0)
+                .show(ui, |ui| {
+                    ui.push_id("second_some", |ui| {
+                        ui.horizontal_top(|ui| {
+                            let mut current: String = self
+                                .text
+                                .lines()
+                                .take(1000)
+                                .enumerate()
+                                .map(|(s, _)| {
+                                    (s + 1).to_string()
+                                        + {
+                                            if s + 1 == self.marker {
+                                                " >"
+                                            } else {
+                                                ""
+                                            }
                                         }
-                                    }
-                                    + "\n"
-                            })
-                            .collect();
+                                        + "\n"
+                                })
+                                .collect();
 
-                        egui::TextEdit::multiline(&mut current)
-                            .font(egui::TextStyle::Monospace)
-                            .interactive(false)
-                            .desired_width(40.0)
-                            .code_editor()
-                            .font(egui::FontId::monospace(15.0))
-                            .show(ui);
+                            egui::TextEdit::multiline(&mut current)
+                                .font(egui::TextStyle::Monospace)
+                                .interactive(false)
+                                .desired_width(40.0)
+                                .code_editor()
+                                .font(egui::FontId::monospace(15.0))
+                                .show(ui);
 
-                        egui::TextEdit::multiline(&mut self.text)
-                            .font(egui::TextStyle::Monospace)
-                            .desired_width(f32::INFINITY)
-                            .code_editor()
-                            .lock_focus(true)
-                            .layouter(&mut layouter)
-                            .show(ui);
+                            egui::TextEdit::multiline(&mut self.text)
+                                .font(egui::TextStyle::Monospace)
+                                .desired_width(f32::INFINITY)
+                                .code_editor()
+                                .lock_focus(true)
+                                .layouter(&mut layouter)
+                                .show(ui);
+                        });
                     });
                 });
-            });
+
+            self.formatter.render(ui);
+
+            if let Err(err) = self.parser.try_to_get_file() {
+                render_error(&err, ui)
+            }
+        });
 
         if ui.button("add example").clicked() {
             self.text = self.text.clone() + EXAMPLE + "\n\n"
@@ -83,9 +95,9 @@ impl Editor {
 
         ui.add_space(10.0);
 
-        match self.parser.try_to_get_file() {
-            Ok(file) => file.render(ui),
-            Err(err) => render_error(&err, ui),
+        if let Ok(file) = self.parser.try_to_get_file() {
+            self.formatter.check(&file);
+            file.render(ui);
         }
     }
 }
