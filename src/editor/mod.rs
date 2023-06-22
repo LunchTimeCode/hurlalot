@@ -109,7 +109,7 @@ pub fn render_error(err: &str, ui: &mut egui::Ui) {
 }
 
 const EXAMPLE: &str = r#"# Testing a JSON response with JSONPath
-GET https://example.org/api/tests/4567
+GET https://example.org/api/tests/{{somepath}}
 
 HTTP 200
 [Asserts]

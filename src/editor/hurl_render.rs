@@ -1,4 +1,4 @@
-use hurl_core::ast::{Entry, HurlFile};
+use hurl_core::ast::{Entry, HurlFile, Template, TemplateElement};
 
 pub trait View {
     fn render(&self, ui: &mut egui::Ui);
@@ -31,6 +31,30 @@ impl EnumeratedView for Entry {
         ui.label(format!("Entry {num}"));
         ui.add_space(1.0);
 
-        ui.label(self.request.method.to_string());
+        ui.horizontal(|ui| {
+            ui.label(self.request.method.to_string());
+            ui.add_space(1.0);
+            self.request.url.render(ui);
+        });
+    }
+}
+
+impl View for Template {
+    fn render(&self, ui: &mut egui::Ui) {
+        ui.horizontal(|ui| {
+            for element in self.elements.iter() {
+                ui.add_space(0.0);
+                element.render(ui);
+            }
+        });
+    }
+}
+
+impl View for TemplateElement {
+    fn render(&self, ui: &mut egui::Ui) {
+        match self {
+            TemplateElement::String { value, .. } => ui.label(value.trim()),
+            TemplateElement::Expression(e) => ui.label("{{".to_string() + &e.variable.name + "}}"),
+        };
     }
 }
