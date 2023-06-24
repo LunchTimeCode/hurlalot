@@ -1,14 +1,13 @@
 use eframe::egui;
 
 use self::{
-    formatter::Formatter,
+    fmt::Formatter,
     highlighter::{highlight, CodeTheme},
     hurl_render::View,
     parser::Parser,
 };
 
 mod fmt;
-mod formatter;
 mod highlighter;
 mod hurl_render;
 mod parser;

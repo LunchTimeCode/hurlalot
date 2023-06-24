@@ -32,6 +32,7 @@ pub enum Token {
     // Primitives
     Whitespace(String),
     Comment(String),
+    #[allow(unused)]
     Value(String),
     Colon(String),
     StringDelimiter(String),
@@ -853,6 +854,7 @@ impl Tokenizable for JsonObjectElement {
     }
 }
 
+#[allow(unused)]
 impl Tokenizable for EntryOption {
     fn tokenize(&self) -> Vec<Token> {
         match self {

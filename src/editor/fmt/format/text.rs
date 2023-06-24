@@ -18,8 +18,10 @@
 use colored::*;
 use hurl_core::ast::*;
 
+#[allow(unused)]
 use super::{token, Token, Tokenizable};
 
+#[allow(unused)]
 pub fn format(hurl_file: HurlFile, color: bool) -> String {
     let mut buffer = String::from("");
     for token in hurl_file.tokenize() {
@@ -28,6 +30,7 @@ pub fn format(hurl_file: HurlFile, color: bool) -> String {
     buffer
 }
 
+#[allow(unused)]
 pub fn format_token(token: Token, color: bool) -> String {
     match token {
         Token::Whitespace(value) => value,

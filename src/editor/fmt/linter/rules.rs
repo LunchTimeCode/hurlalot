@@ -24,6 +24,7 @@ pub fn check_hurl_file(hurl_file: &HurlFile) -> Vec<Error> {
     hurl_file.entries.iter().flat_map(check_entry).collect()
 }
 
+#[allow(unused)]
 /// Returns a new linted instance from this `hurl_file`.
 pub fn lint_hurl_file(hurl_file: &HurlFile) -> HurlFile {
     HurlFile {

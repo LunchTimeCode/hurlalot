@@ -17,11 +17,13 @@
  */
 use base64::engine::general_purpose;
 use base64::Engine;
+#[allow(unused)]
 use hurl_core::ast::Method;
 use hurl_core::ast::*;
 
 use super::serialize_json::*;
 
+#[allow(unused)]
 pub fn format(hurl_file: &HurlFile) -> String {
     hurl_file.to_json().format()
 }
