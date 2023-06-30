@@ -17,7 +17,7 @@ catppuccin-egui = "3.0.0"
 egui_extras ="0.22.0"
 log = "0.4.19"
 
-hurl_core = "3.0.1"
+hurl_core = "4.0.0"
 regex = "1.8.4"
 colored = "2.0.0"
 atty = "0.2.14"
