@@ -23,7 +23,13 @@ impl eframe::App for HApp {
         ctx.request_repaint();
         catppuccin_egui::set_theme(ctx, catppuccin_egui::MACCHIATO);
 
-        egui::CentralPanel::default().show(ctx, |ui| self.editor.render(ui));
+        egui::SidePanel::left("left").show(ctx, |ui| {
+            ui.add_space(200.0);
+        });
+        egui::CentralPanel::default().show(ctx, |ui| {
+            ui.add_space(100.0);
+            self.editor.render(ui);
+        });
     }
 
     // fn save(&mut self, storage: &mut dyn eframe::Storage) {

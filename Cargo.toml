@@ -17,11 +17,13 @@ catppuccin-egui = "3.0.0"
 egui_extras ="0.22.0"
 log = "0.4.19"
 
-hurl_core = "3.0.1"
 regex = "1.8.4"
 colored = "2.0.1"
 atty = "0.2.14"
 base64 = "0.21.2"
+hurl_core3 = {package = "hurl_core", version = "3.0.1"}
+hurl_core4 = {package = "hurl_core", version = "4.0.0"}
+
 
 wasm-bindgen = "0.2.87"
 console_error_panic_hook = "0.1.7"

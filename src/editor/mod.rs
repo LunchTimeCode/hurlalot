@@ -1,22 +1,17 @@
 use eframe::egui;
 
 use self::{
-    fmt::Formatter,
     highlighter::{highlight, CodeTheme},
-    hurl_render::View,
     parser::Parser,
 };
 
-mod fmt;
 mod highlighter;
-mod hurl_render;
 mod parser;
 
 #[derive(Default)]
 pub struct Editor {
     text: String,
     parser: Parser,
-    formatter: Formatter,
     marker: usize,
 }
 
@@ -31,15 +26,15 @@ impl Editor {
             self.marker = usize::MAX
         }
 
-        let mut layouter = |ui: &egui::Ui, string: &str, _wrap_width: f32| {
-            let layout_job = highlight(ui.ctx(), &theme, string);
-            ui.fonts(|f| f.layout_job(layout_job))
-        };
+        ui.vertical(|ui| {
+            let mut layouter = |ui: &egui::Ui, string: &str, _wrap_width: f32| {
+                let layout_job = highlight(ui.ctx(), &theme, string);
+                ui.fonts(|f| f.layout_job(layout_job))
+            };
 
-        ui.horizontal_top(|ui| {
             egui::ScrollArea::vertical()
                 .id_source("some inner 3")
-                .max_height(500.0)
+                .max_height(800.0)
                 .max_width(1000.0)
                 .show(ui, |ui| {
                     ui.push_id("second_some", |ui| {
@@ -81,23 +76,16 @@ impl Editor {
                     });
                 });
 
-            self.formatter.render(ui);
+            if ui.button("add example").clicked() {
+                self.text = self.text.clone() + EXAMPLE + "\n\n"
+            }
 
             if let Err(err) = self.parser.try_to_get_file() {
                 render_error(&err, ui)
             }
+
+            ui.add_space(10.0);
         });
-
-        if ui.button("add example").clicked() {
-            self.text = self.text.clone() + EXAMPLE + "\n\n"
-        }
-
-        ui.add_space(10.0);
-
-        if let Ok(file) = self.parser.try_to_get_file() {
-            self.formatter.check(&file);
-            file.render(ui);
-        }
     }
 }
 
