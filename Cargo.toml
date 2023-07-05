@@ -21,7 +21,7 @@ regex = "1.8.4"
 colored = "2.0.1"
 atty = "0.2.14"
 base64 = "0.21.2"
-hurl_core3 = {package = "hurl_core", version = "3.0.1"}
+hurl_core3 = {package = "hurl_core", version = "4.0.0"}
 hurl_core4 = {package = "hurl_core", version = "4.0.0"}
 
 
