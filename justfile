@@ -13,11 +13,12 @@ export JUST_LOG := log
 watch:
 	cargo watch -c -- just verify
 	
+# main entry point to run in local	
 run:
    trunk serve
 
 test:
-    cargo test --target wasm32-unknown-unknown
+    cargo test
 
 # Perform all verifications (compile, test, lint etc.)
 verify: test lint
