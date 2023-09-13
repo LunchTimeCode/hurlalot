@@ -14,13 +14,10 @@ tracing-subscriber = "0.3"
 serde = { version = "1", features = ["derive"] }
 
 catppuccin-egui = "3.1.0"
-egui_extras ="0.22.0"
 log = "0.4.20"
 
 regex = "1.9.1"
 colored = "2.0.4"
-atty = "0.2.14"
-base64 = "0.21.3"
 hurl_core4 = {package = "hurl_core", version = "4.0.0"}
 
 
