@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-egui = { version = "0.22.0", default-features = true }
+egui = { version = "0.23.0", default-features = true }
 eframe = { version = "0.22.0", default-features = true, features = [
   "default_fonts", # Embed the default egui fonts.
 ] }
