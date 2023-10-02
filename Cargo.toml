@@ -19,7 +19,7 @@ log = "0.4.20"
 
 regex = "1.9.6"
 colored = "2.0.4"
-hurl_core4 = {package = "hurl_core", version = "4.0.0"}
+hurl_core4 = {package = "hurl_core", version = "4.1.0"}
 
 
 wasm-bindgen = "0.2.87"
