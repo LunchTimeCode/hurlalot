@@ -1,4 +1,5 @@
 pub mod ext {
+    use hurl_core4::parser::ParseError;
 
     pub fn parse_err_to_pos_err(error: &HurlParseErrorEnum, pos: HurlPos) -> String {
         let message = parse_err_to_message(error);
@@ -43,6 +44,7 @@ pub mod ext {
             HurlParseErrorEnum::InvalidOption => "Invalid option".to_string(),
             HurlParseErrorEnum::Multiline => "Multiline".to_string(),
             HurlParseErrorEnum::GraphQlVariables => "GraphQlVariables".to_string(),
+            HurlParseErrorEnum::UrlInvalidStart => "Url start is invalid".to_string(),
         }
     }
 
@@ -90,81 +92,55 @@ pub mod ext {
         pub column: usize,
     }
 
-    impl From<hurl_core4::parser::ParseError> for HurlParseErrorEnum {
-        fn from(value: hurl_core4::parser::ParseError) -> Self {
+    impl From<ParseError> for HurlParseErrorEnum {
+        fn from(value: ParseError) -> Self {
             match value {
-                hurl_core4::parser::ParseError::Expecting { value } => {
-                    HurlParseErrorEnum::Expecting { value }
-                }
-                hurl_core4::parser::ParseError::Method { name } => {
-                    HurlParseErrorEnum::Method { name }
-                }
-                hurl_core4::parser::ParseError::Version {} => HurlParseErrorEnum::Version {},
-                hurl_core4::parser::ParseError::Status {} => HurlParseErrorEnum::Status {},
-                hurl_core4::parser::ParseError::Filename {} => HurlParseErrorEnum::Filename {},
-                hurl_core4::parser::ParseError::FileContentType {} => {
-                    HurlParseErrorEnum::FileContentType {}
-                }
-                hurl_core4::parser::ParseError::Space {} => HurlParseErrorEnum::Space {},
-                hurl_core4::parser::ParseError::RequestSectionName { name } => {
+                ParseError::Expecting { value } => HurlParseErrorEnum::Expecting { value },
+                ParseError::Method { name } => HurlParseErrorEnum::Method { name },
+                ParseError::Version {} => HurlParseErrorEnum::Version {},
+                ParseError::Status {} => HurlParseErrorEnum::Status {},
+                ParseError::Filename {} => HurlParseErrorEnum::Filename {},
+                ParseError::FileContentType {} => HurlParseErrorEnum::FileContentType {},
+                ParseError::Space {} => HurlParseErrorEnum::Space {},
+                ParseError::RequestSectionName { name } => {
                     HurlParseErrorEnum::RequestSectionName { name }
                 }
-                hurl_core4::parser::ParseError::ResponseSectionName { name } => {
+                ParseError::ResponseSectionName { name } => {
                     HurlParseErrorEnum::ResponseSectionName { name }
                 }
-                hurl_core4::parser::ParseError::JsonpathExpr {} => {
-                    HurlParseErrorEnum::JsonpathExpr {}
-                }
-                hurl_core4::parser::ParseError::XPathExpr {} => HurlParseErrorEnum::XPathExpr {},
-                hurl_core4::parser::ParseError::TemplateVariable {} => {
-                    HurlParseErrorEnum::TemplateVariable {}
-                }
-                hurl_core4::parser::ParseError::Json {} => HurlParseErrorEnum::Json {},
-                hurl_core4::parser::ParseError::Xml {} => HurlParseErrorEnum::Xml {},
-                hurl_core4::parser::ParseError::Predicate => HurlParseErrorEnum::Predicate,
-                hurl_core4::parser::ParseError::PredicateValue => {
-                    HurlParseErrorEnum::PredicateValue
-                }
-                hurl_core4::parser::ParseError::RegexExpr { message } => {
-                    HurlParseErrorEnum::RegexExpr { message }
-                }
-                hurl_core4::parser::ParseError::Unexpected { character } => {
+                ParseError::JsonPathExpr {} => HurlParseErrorEnum::JsonpathExpr {},
+                ParseError::XPathExpr {} => HurlParseErrorEnum::XPathExpr {},
+                ParseError::TemplateVariable {} => HurlParseErrorEnum::TemplateVariable {},
+                ParseError::Json {} => HurlParseErrorEnum::Json {},
+                ParseError::Xml {} => HurlParseErrorEnum::Xml {},
+                ParseError::Predicate => HurlParseErrorEnum::Predicate,
+                ParseError::PredicateValue => HurlParseErrorEnum::PredicateValue,
+                ParseError::RegexExpr { message } => HurlParseErrorEnum::RegexExpr { message },
+                ParseError::Unexpected { character } => {
                     HurlParseErrorEnum::Unexpected { character }
                 }
-                hurl_core4::parser::ParseError::Eof {} => HurlParseErrorEnum::Eof {},
-                hurl_core4::parser::ParseError::DuplicateSection => {
-                    HurlParseErrorEnum::DuplicateSection
-                }
-                hurl_core4::parser::ParseError::RequestSection => {
-                    HurlParseErrorEnum::RequestSection
-                }
-                hurl_core4::parser::ParseError::ResponseSection => {
-                    HurlParseErrorEnum::ResponseSection
-                }
-                hurl_core4::parser::ParseError::HexDigit => HurlParseErrorEnum::HexDigit,
-                hurl_core4::parser::ParseError::Unicode => HurlParseErrorEnum::Unicode,
-                hurl_core4::parser::ParseError::EscapeChar => HurlParseErrorEnum::EscapeChar,
-                hurl_core4::parser::ParseError::InvalidCookieAttribute => {
-                    HurlParseErrorEnum::InvalidCookieAttribute
-                }
-                hurl_core4::parser::ParseError::OddNumberOfHexDigits => {
-                    HurlParseErrorEnum::OddNumberOfHexDigits
-                }
-                hurl_core4::parser::ParseError::UrlIllegalCharacter(c) => {
-                    HurlParseErrorEnum::UrlIllegalCharacter(c)
-                }
-                hurl_core4::parser::ParseError::InvalidOption => HurlParseErrorEnum::InvalidOption,
-                hurl_core4::parser::ParseError::Multiline => HurlParseErrorEnum::Multiline,
-                hurl_core4::parser::ParseError::GraphQlVariables => {
-                    HurlParseErrorEnum::GraphQlVariables
-                }
-                hurl_core4::parser::ParseError::Url {} => HurlParseErrorEnum::Url {},
+                ParseError::Eof {} => HurlParseErrorEnum::Eof {},
+                ParseError::DuplicateSection => HurlParseErrorEnum::DuplicateSection,
+                ParseError::RequestSection => HurlParseErrorEnum::RequestSection,
+                ParseError::ResponseSection => HurlParseErrorEnum::ResponseSection,
+                ParseError::HexDigit => HurlParseErrorEnum::HexDigit,
+                ParseError::Unicode => HurlParseErrorEnum::Unicode,
+                ParseError::EscapeChar => HurlParseErrorEnum::EscapeChar,
+                ParseError::InvalidCookieAttribute => HurlParseErrorEnum::InvalidCookieAttribute,
+                ParseError::OddNumberOfHexDigits => HurlParseErrorEnum::OddNumberOfHexDigits,
+                ParseError::UrlIllegalCharacter(c) => HurlParseErrorEnum::UrlIllegalCharacter(c),
+                ParseError::InvalidOption => HurlParseErrorEnum::InvalidOption,
+                ParseError::Multiline => HurlParseErrorEnum::Multiline,
+                ParseError::GraphQlVariables => HurlParseErrorEnum::GraphQlVariables,
+                ParseError::Url {} => HurlParseErrorEnum::Url {},
+                ParseError::UrlInvalidStart => HurlParseErrorEnum::UrlInvalidStart,
             }
         }
     }
 
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub enum HurlParseErrorEnum {
+        UrlInvalidStart,
         Expecting { value: String },
         Method { name: String },
         Version {},

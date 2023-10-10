@@ -15,7 +15,7 @@ watch:
 	
 # main entry point to run in local	
 run:
-   trunk serve
+   cargo run
 
 test:
     cargo test
