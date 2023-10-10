@@ -26,7 +26,7 @@ verify: test lint
 # Run the static code analysis
 lint:
 	cargo fmt --check
-	cargo clippy --target wasm32-unknown-unknown
+	cargo clippy
 
 clean:
 	rm -rf target
@@ -37,5 +37,9 @@ clean:
 fmt:
   cargo fmt
 
+# run the release process in dry run mode (requires `npm`, a `GITHUB_TOKEN` and a `CARGO_REGISTRY_TOKEN`)
+release *args:
+	npm install --no-save conventional-changelog-conventionalcommits @semantic-release/exec
+	npx semantic-release {{args}}
 
 
