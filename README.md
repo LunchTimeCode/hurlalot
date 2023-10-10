@@ -3,23 +3,13 @@ A hurl scratch pad
 
 ## Using hurlalot
 
-- go to silenloc.github.io/hurlalot/
+Compile as you see in the just recipe or use the artifacts in the release
 
-use it as an scratch pad that will tell you if your hurl file is valid or not at what line and column.
-almost an IDE for hurl
+In the future there will be a server that can check the file for you
+https://github.com/SilenLoc/hurlalot_server
 
-## Contributing
-
-Not sure...
-
-I am not sure about the layout, if you have ideas please create an issue or a pr.
-
-
-
-Feature wise it is as complete as hurl_core, as I use it to parse the file.
-
-There are still improvements to do, the biggest one is error messages and contextual information about the error.
-Another improvment would be to add more hurl examples.
+Use it as a scratch pad that will tell you if your hurl file is valid or not at what line and column.
+Almost an IDE for hurl
 
 ## Hurl is great
 
