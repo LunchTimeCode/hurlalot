@@ -13,6 +13,6 @@ Almost an IDE for hurl
 
 ## Hurl is great
 
-To be honest hurl is 80 percent of this project and it will also stay like that, as the cli tool is really good and the only thing it does not cover is it not having a gui to inspect the file in a nice way.
+To be honest hurl is 80 percent of this project and it will also stay like that, as the cli tool is really good and the only thing it does not cover is not having a gui to inspect the file in a nice way.
 
 I would like to have an LSP and maybe I will try to create one soon. This is the replacement for it until then for me.
