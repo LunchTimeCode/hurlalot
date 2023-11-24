@@ -13,7 +13,7 @@ eframe = { version = "0.23.0", default-features = true, features = [
 tracing-subscriber = "0.3"
 serde = { version = "1", features = ["derive"] }
 
-catppuccin-egui = { git = "https://github.com/catppuccin/egui.git" }
+catppuccin-egui = "3.1.0"
 egui_tiles = "0.3.1"
 log = "0.4.20"
 
