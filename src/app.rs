@@ -36,9 +36,7 @@ impl eframe::App for H {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         ctx.request_repaint();
         catppuccin_egui::set_theme(ctx, catppuccin_egui::MACCHIATO);
-        egui::TopBottomPanel::top("top1").show(ctx, |ui| {
-            if ui.button("Add new editor (does nothing yet)").clicked() {}
-        });
+        egui::TopBottomPanel::top("top1").show(ctx, |ui| ui.label("Hurlalot"));
         egui::CentralPanel::default().show(ctx, |ui| {
             self.tree.ui(&mut self.behavior, ui);
         });
@@ -94,21 +92,23 @@ impl egui_tiles::Behavior<Pane> for TreeBehavior {
         pane: &mut Pane,
     ) -> egui_tiles::UiResponse {
         let module = &mut pane.module;
-
-        ui.add_space(50.0);
-
-        match module {
-            Module::Editor(state) => state.render(ui),
-        };
-
-        if ui
-            .add(egui::Button::new("Drag Handle").sense(egui::Sense::drag()))
+        ui.add_space(10.0);
+        let res = if ui
+            .add(egui::Button::new("Drag here").sense(egui::Sense::drag()))
             .drag_started()
         {
             egui_tiles::UiResponse::DragStarted
         } else {
             egui_tiles::UiResponse::None
-        }
+        };
+
+        ui.add_space(10.0);
+
+        match module {
+            Module::Editor(state) => state.render(ui),
+        };
+
+        res
     }
 
     fn tab_title_for_pane(&mut self, pane: &Pane) -> WidgetText {
