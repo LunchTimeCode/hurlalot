@@ -1,52 +1,31 @@
-use poll_promise::Promise;
+use log::info;
 use serde::{Deserialize, Serialize};
-
-
-struct Resource {
-    /// HTTP response
-    response: ehttp::Response,
-
-    /// If set, the response was an image.
-    message: String,
-
-    error: ParseResponse
-
-}
 
 #[derive(Serialize, Clone)]
 pub struct File {
     content: String,
 }
 
-
-pub async fn parse(content: &str, api: &str) -> Option<String> {
-    // make the request
-    let raw = ettpRequest::post(api)
-        .body(File {
-            content: content.to_string(),
-        })
-        .header("Content-Type", "application/json")
-        .send()
-        .await
-        .ok()?
-        .json::<ParseResponse>()
-        .await
-        .ok()?;
-
-    let res = match raw.error {
-        None => "all good".to_string(),
-        Some(err) => err.message,
-    };
-    Some(res)
+impl From<String> for File {
+    fn from(value: String) -> Self {
+        File { content: value }
+    }
 }
 
-#[derive(Deserialize)]
+impl From<File> for Vec<u8> {
+    fn from(val: File) -> Self {
+        let string = serde_json::to_string(&val).unwrap();
+        string.as_bytes().to_vec()
+    }
+}
+
+#[derive(Deserialize, Clone)]
 pub struct ParseResponse {
     pub error: Option<ParseError>,
     pub result: Option<String>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct ParseError {
     pub pos: HurlPos,
     pub message: String,
@@ -56,4 +35,36 @@ pub struct ParseError {
 pub struct HurlPos {
     pub line: usize,
     pub column: usize,
+}
+
+impl ParseResponse {
+    pub fn from_response(response: ehttp::Response) -> Self {
+        if response.status > 299 {
+            info!("Server not reachable");
+            return Self {
+                error: None,
+                result: Some("Server not reachable".to_owned()),
+            };
+        }
+
+        let Ok(res) = String::from_utf8(response.bytes) else {
+            info!("could not parse from bytes");
+            return Self {
+                error: None,
+                result: Some("could not from utf 8".to_owned()),
+            };
+        };
+
+        let response: Self = if let Ok(response) = serde_json::from_str(&res) {
+            response
+        } else {
+            info!("could not parse");
+            return Self {
+                error: None,
+                result: Some("could not from json".to_owned()),
+            };
+        };
+
+        response
+    }
 }

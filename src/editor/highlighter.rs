@@ -1,4 +1,5 @@
 use egui::text::LayoutJob;
+use egui::{Color32, TextFormat};
 
 #[derive(serde::Deserialize, serde::Serialize, Default)]
 struct Highlighter {}
@@ -91,6 +92,7 @@ fn is_http(word: &str) -> bool {
     word == "HTTP"
 }
 
+#[allow(clippy::unsafe_derive_deserialize)]
 #[derive(Clone, Hash, PartialEq, serde::Deserialize, serde::Serialize)]
 #[serde(default)]
 pub struct CodeTheme {
@@ -108,7 +110,6 @@ impl Default for CodeTheme {
 impl CodeTheme {
     pub fn dark() -> Self {
         let font_id = egui::FontId::monospace(15.0);
-        use egui::{Color32, TextFormat};
         Self {
             dark_mode: true,
             formats: enum_map::enum_map![

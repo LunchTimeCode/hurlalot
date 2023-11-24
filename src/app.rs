@@ -6,7 +6,7 @@ use egui::{Ui, WidgetText};
 
 #[derive(Deserialize, Serialize)]
 #[serde(default)]
-pub struct HApp {
+pub struct H {
     #[serde(skip)]
     tree: egui_tiles::Tree<Pane>,
 
@@ -14,7 +14,7 @@ pub struct HApp {
     behavior: TreeBehavior,
 }
 
-impl Default for HApp {
+impl Default for H {
     fn default() -> Self {
         Self {
             behavior: TreeBehavior {},
@@ -23,16 +23,16 @@ impl Default for HApp {
     }
 }
 
-impl HApp {
+impl H {
     pub fn new(_: &eframe::CreationContext<'_>) -> Self {
         // if let Some(storage) = cc.storage {
         //     return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
         // }
-        Default::default()
+        H::default()
     }
 }
 
-impl eframe::App for HApp {
+impl eframe::App for H {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         ctx.request_repaint();
         catppuccin_egui::set_theme(ctx, catppuccin_egui::MACCHIATO);
@@ -123,6 +123,6 @@ pub struct EditorState {
 
 impl EditorState {
     pub fn render(&mut self, ui: &mut Ui) {
-        self.editor.render(ui)
+        self.editor.render(ui);
     }
 }

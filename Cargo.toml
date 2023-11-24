@@ -10,6 +10,8 @@ egui = { version = "0.23.0", default-features = true }
 eframe = { version = "0.23.0", default-features = true, features = [
   "default_fonts", # Embed the default egui fonts.
 ] }
+ehttp = { version = "0.3.1"}
+poll-promise = { version = "0.3",  default-features = false }
 serde_json = "1.0"
 tracing-subscriber = "0.3"
 serde = { version = "1", features = ["derive"] }
@@ -20,12 +22,17 @@ log = "0.4.20"
 
 regex = "1.9.6"
 colored = "2.0.4"
-ehttp = { version = "0.3.1", optional = true }
-poll-promise = { version = "0.3", optional = true, default-features = false }
+
 
 wasm-bindgen = "0.2.87"
 console_error_panic_hook = "0.1.7"
 tracing-wasm = "0.2"
 wasm-bindgen-futures = "0.4.37"
-wgpu = { version = "0.17.1", features = ["webgl"] }
+wgpu = { version = "0.18.0", features = ["webgl"] }
 enum-map = { version = "2", features = ["serde"] }
+web-sys = "0.3.64"
+web-time = "0.2.3"
+
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.38"

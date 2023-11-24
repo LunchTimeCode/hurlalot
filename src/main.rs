@@ -1,20 +1,21 @@
+#![warn(clippy::pedantic)]
 mod app;
 mod editor;
 mod hurl_ext;
 
 mod web {
+    use crate::app;
     use eframe::WebRunner;
     use wasm_bindgen::prelude::*;
-    use crate::app;
 
     #[derive(Clone)]
     #[wasm_bindgen]
-    pub struct WebHandle {
+    pub struct Handle {
         runner: eframe::WebRunner,
     }
 
     #[wasm_bindgen]
-    impl WebHandle {
+    impl Handle {
         /// Installs a panic hook, then returns.
         #[allow(clippy::new_without_default)]
         #[wasm_bindgen(constructor)]
@@ -32,7 +33,7 @@ mod web {
                 .start(
                     canvas_id,
                     eframe::WebOptions::default(),
-                    Box::new(|cc| Box::new(app::HApp::new(cc))),
+                    Box::new(|cc| Box::new(app::H::new(cc))),
                 )
                 .await
         }
@@ -45,7 +46,7 @@ fn main() {
     tracing_wasm::set_as_global_default();
 
     wasm_bindgen_futures::spawn_local(async {
-        let w = web::WebHandle::new();
-        w.start("hurlalot").await.expect("failed to start in web")
+        let w = web::Handle::new();
+        w.start("hurlalot").await.expect("failed to start in web");
     });
 }

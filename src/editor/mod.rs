@@ -21,9 +21,9 @@ impl Editor {
         let theme = CodeTheme::default();
 
         if let Some(err) = self.parser.try_to_get_err() {
-            self.marker = err.pos.line
+            self.marker = err.pos.line;
         } else {
-            self.marker = usize::MAX
+            self.marker = usize::MAX;
         }
 
         ui.vertical(|ui| {
@@ -60,7 +60,7 @@ impl Editor {
                             egui::TextEdit::multiline(&mut current)
                                 .font(egui::TextStyle::Monospace)
                                 .interactive(false)
-                                .desired_width(40.0)
+                                .desired_width(60.0)
                                 .code_editor()
                                 .font(egui::FontId::monospace(15.0))
                                 .show(ui);
@@ -77,11 +77,11 @@ impl Editor {
                 });
 
             if ui.button("add example").clicked() {
-                self.text = self.text.clone() + EXAMPLE + "\n\n"
+                self.text = self.text.clone() + EXAMPLE + "\n\n";
             }
 
             if let Err(err) = self.parser.try_to_get_file() {
-                render_error(&err, ui)
+                render_error(&err, ui);
             }
 
             ui.add_space(10.0);
@@ -91,7 +91,7 @@ impl Editor {
 
 pub fn render_error(err: &str, ui: &mut egui::Ui) {
     ui.group(|ui| {
-        ui.label(format!("Error: {}", err));
+        ui.label(format!("Error: {err}"));
     });
 }
 
