@@ -38,7 +38,7 @@ impl Parser {
     }
     fn inner_parse(&mut self, text: &str) {
         let (sender, promise) = Promise::new();
-        let request = ehttp::Request::post(&self.url, Into::<File>::into(text.to_string()).into());
+        let request = post(&self.url, Into::<File>::into(text.to_string()).into());
         ehttp::fetch(request, move |response| {
             let resource = response.map(ParseResponse::from_response);
             sender.send(resource);
@@ -70,5 +70,19 @@ impl Default for Parser {
             promise: Option::default(),
             url: "https://hurlalot.shuttleapp.rs/api/parse".to_owned(),
         }
+    }
+}
+
+#[allow(clippy::needless_pass_by_value)]
+pub fn post(url: impl ToString, body: Vec<u8>) -> ehttp::Request {
+    ehttp::Request {
+        method: "POST".to_owned(),
+        url: url.to_string(),
+        body,
+        headers: ehttp::Headers::new(&[
+            ("Accept", "*/*"),
+            ("Content-Type", "text/plain; charset=utf-8"),
+        ]),
+        mode: ehttp::Mode::NoCors,
     }
 }
