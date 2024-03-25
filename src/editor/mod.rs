@@ -1,17 +1,16 @@
 use eframe::egui;
+use egui_code_editor::{CodeEditor, ColorTheme};
 
-use self::{
-    highlighter::{highlight, CodeTheme},
-    parser::Parser,
-};
+use self::parser::Parser;
 
-mod highlighter;
 mod parser;
+mod syntax;
 
 pub struct Editor {
     text: String,
     parser: Parser,
     marker: usize,
+    syntax: egui_code_editor::Syntax,
 }
 
 const ABSTRACT: &str = r"# -------------------------------------------------------------------
@@ -31,14 +30,13 @@ impl Default for Editor {
             text: ABSTRACT.to_owned(),
             parser: Parser::default(),
             marker: usize::default(),
+            syntax: syntax::hurl(),
         }
     }
 }
-
 impl Editor {
     pub fn render(&mut self, ui: &mut egui::Ui) {
         self.parser.parse(&self.text);
-        let theme = CodeTheme::default();
 
         if let Some(err) = self.parser.try_to_get_err() {
             self.marker = err.pos.line;
@@ -63,11 +61,6 @@ impl Editor {
             ui.add_space(1.0);
 
             ui.vertical(|ui| {
-                let mut layouter = |ui: &egui::Ui, string: &str, _wrap_width: f32| {
-                    let layout_job = highlight(ui.ctx(), &theme, string);
-                    ui.fonts(|f| f.layout_job(layout_job))
-                };
-
                 egui::ScrollArea::vertical()
                     .id_source("some inner 3")
                     .min_scrolled_height(750.0)
@@ -76,48 +69,24 @@ impl Editor {
                     .show(ui, |ui| {
                         ui.push_id("second_some", |ui| {
                             ui.horizontal_top(|ui| {
-                                let mut current: String = self
-                                    .text
-                                    .lines()
-                                    .take(1000)
-                                    .enumerate()
-                                    .map(|(s, _)| {
-                                        (s + 1).to_string()
-                                            + {
-                                                if s + 1 == self.marker {
-                                                    " >"
-                                                } else {
-                                                    ""
-                                                }
-                                            }
-                                            + "\n"
-                                    })
-                                    .collect();
-
-                                egui::TextEdit::multiline(&mut current)
-                                    .font(egui::TextStyle::Monospace)
-                                    .interactive(false)
-                                    .desired_width(60.0)
-                                    .code_editor()
-                                    .font(egui::FontId::monospace(15.0))
-                                    .show(ui);
-
-                                egui::TextEdit::multiline(&mut self.text)
-                                    .font(egui::TextStyle::Monospace)
-                                    .desired_width(f32::INFINITY)
-                                    .code_editor()
-                                    .lock_focus(true)
-                                    .layouter(&mut layouter)
-                                    .show(ui);
+                                let mut editor = CodeEditor::default()
+                                    .id_source("code editor")
+                                    .with_rows(10)
+                                    .with_fontsize(14.0)
+                                    .with_theme(ColorTheme::SONOKAI)
+                                    .with_syntax(self.syntax.to_owned())
+                                    .with_numlines(true)
+                                    .vscroll(true);
+                                editor.show(ui, &mut self.text);
                             });
                         });
+
+                        if let Err(err) = self.parser.try_to_get_file() {
+                            render_error(&err, ui);
+                        }
+
+                        ui.add_space(10.0);
                     });
-
-                if let Err(err) = self.parser.try_to_get_file() {
-                    render_error(&err, ui);
-                }
-
-                ui.add_space(10.0);
             });
         });
     }
