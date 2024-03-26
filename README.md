@@ -6,7 +6,7 @@ A hurl scratch pad https://silenloc.github.io/hurlalot/
 This project depends on:
 https://github.com/SilenLoc/hurlalot_server
 
-The goal is to be able to user your own running instance of the server.
+The goal is to be able to use your own running instance of the server.
 
 Use it as a scratch pad that will tell you if your hurl file is valid or not at what line and column.
 Almost an IDE for hurl
