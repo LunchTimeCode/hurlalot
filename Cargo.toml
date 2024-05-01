@@ -19,7 +19,7 @@ serde = { version = "1", features = ["derive"] }
 
 catppuccin-egui = { version = "5" }
 egui_tiles = "0.7.2"
-log = "0.4.20"
+log = "0.4.21"
 
 regex = "1.9.6"
 colored = "2.0.4"
