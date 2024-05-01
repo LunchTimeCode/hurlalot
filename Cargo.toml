@@ -32,7 +32,7 @@ wasm-bindgen-futures = "0.4.37"
 wgpu = { version = "0.19.3", features = ["webgl"] }
 enum-map = { version = "2", features = ["serde"] }
 web-sys = "0.3.64"
-web-time = "0.2.3"
+web-time = "0.2.4"
 
 
 [dev-dependencies]
