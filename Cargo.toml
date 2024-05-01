@@ -22,7 +22,7 @@ egui_tiles = "0.7.2"
 log = "0.4.20"
 
 regex = "1.9.6"
-colored = "2.0.4"
+colored = "2.1.0"
 
 
 wasm-bindgen = "0.2.87"
